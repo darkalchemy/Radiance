@@ -1,7 +1,6 @@
 #include <iostream>
 #include <map>
 #include <sstream>
-#include "radiance.h"
 #include "misc_functions.h"
 #include "report.h"
 #include "response.h"
@@ -40,16 +39,18 @@ std::string report(params_type &params, user_list &users_list, domain_list &doma
 		<< R"(  "leechers tracked": )" << stats.leechers << ',' << std::endl
 		<< R"(  "seeders tracked": )" << stats.seeders << ',' << std::endl
 		<< R"(  "bytes read": )" << stats.bytes_read << ',' << std::endl
-		<< R"(  "bytes written": )" << stats.bytes_written << std::endl
+		<< R"(  "bytes written": )" << stats.bytes_written << ',' << std::endl
+		<< R"(  "IPv4 peers": )" << stats.ipv4_peers << ','  << std::endl
+		<< R"(  "IPv6 peers": )" << stats.ipv6_peers << std::endl
 		<< "}" << std::endl;
 	} else if (action == "db") {
 		output << "{" << std::endl
-		<< R"(  "torrent_queue": )" << stats.db.torrent_queue << ',' << std::endl
-		<< R"(  "user_queue": )" << stats.db.user_queue << ',' << std::endl
-		<< R"(  "peer_queue": )" << stats.db.peer_queue << ',' << std::endl
-		<< R"(  "peer_hist_queue": )" << stats.db.peer_hist_queue << ',' << std::endl
-		<< R"(  "snatch_queue": )" << stats.db.snatch_queue << ',' << std::endl
-		<< R"(  "token_queue": )" << stats.db.token_queue << std::endl
+		<< R"(  "torrent_queue": )" << stats.torrent_queue << ',' << std::endl
+		<< R"(  "user_queue": )" << stats.user_queue << ',' << std::endl
+		<< R"(  "peer_queue": )" << stats.peer_queue << ',' << std::endl
+		<< R"(  "peer_hist_queue": )" << stats.peer_hist_queue << ',' << std::endl
+		<< R"(  "snatch_queue": )" << stats.snatch_queue << ',' << std::endl
+		<< R"(  "token_queue": )" << stats.token_queue << std::endl
 		<< "}" << std::endl;
 	} else if (action == "domain") {
 		output << "{" << std::endl;
