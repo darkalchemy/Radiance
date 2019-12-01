@@ -1,6 +1,6 @@
-# Radiance
+# Pu-239 Radiance
 
-Radiance is a BitTorrent tracker written in C++ for the [Luminance](http://www.github.com/Empornium/Luminance) project. It supports requests over TCP and can track both IPv4 and IPv6 peers in a dual-stack mixed swarm.
+Radiance is a BitTorrent tracker written in C++ for the [Luminance](http://www.github.com/Empornium/Luminance) project. It supports requests over TCP and can track both IPv4 and IPv6 peers in a dual-stack mixed swarm. This has been modified to run with Pu-239 source code.
 
 ## Radiance Compile-time Dependencies
 
@@ -15,45 +15,23 @@ Radiance is a BitTorrent tracker written in C++ for the [Luminance](http://www.g
 Also required for debug builds:
 * [gperftools](https://github.com/gperftools/gperftools) (CPU profiler bindings)
 
+```
+sudo apt-get install libboost-dev libboost-all-dev libev-dev libmysql++-dev libjemalloc-dev
+```
+
 ### Standalone Installation
 
-* Create the following tables:
- - `options`
- - `torrents`
- - `users_freeleeches`
- - `users_slots`
- - `users_main`
- - `xbt_client_blacklist`
- - `xbt_files_users`
- - `xbt_peers_history`
- - `xbt_snatched`
+* Copy `radiance.example.conf` to `radiance.conf`
 
 * Edit `radiance.conf` to your liking.
 
 * Build Radiance:
 ```
 autoreconf -i
-./configure
+./configure --with-jemalloc
 make
 sudo make install
 ```
-
-* On FreeBSD:
-```
-pkg update
-pkg install autoconf automake autotools boost-libs clang35 gcc8 git gmake libev llvm35 mysql++-mysql56 google-perftools
-git clone https://github.com/SebbaGerra/Radiance.git
-cd Radiance/ && autoreconf -i && ./configure --with-tcmalloc && make && make install
-```
-
-# Configure options:
-`--with-jemalloc` is recommended
-
-`--with-tcmalloc` is a good alternative to jemalloc
-
-`--enable-debug` can help to find the source of crashes
-
-Obs: Configure flags `--with-jemalloc` and `--enable-debug` doesn't work  on FreeBSD, `--with-jemalloc` work's since you have google-perftools installed.
 
 ## Running Radiance
 

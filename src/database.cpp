@@ -272,7 +272,7 @@ void database::load_users(user_list &users) {
 	syslog(trace) << "Connecting to DB to load users";
 	mysqlpp::ScopedConnection conn(*pool, true);
 	try {
-		mysqlpp::Query query = conn->query("SELECT um.ID, can_leech, torrent_pass, (Visible='0' OR u.IPID IS NULL) AS Protected, track_ipv6, personal_freeleech, personal_doubleseed FROM users_main AS um JOIN users AS u ON um.ID=u.ID WHERE Enabled='1'");
+		mysqlpp::Query query = conn->query("SELECT um.ID, u.can_leech, u.torrent_pass, u.Visible='0' AS Protected, u.track_ipv6, u.personal_freeleech, u.personal_doubleseed FROM users AS um JOIN users AS u ON um.ID=u.ID WHERE u.Status=0");
 		mysqlpp::StoreQueryResult res = query.store();
 		size_t num_rows = res.num_rows();
 		std::unordered_set<std::string> cur_keys;
@@ -342,8 +342,8 @@ void database::load_seeders(torrent_list &torrents, user_list &users) {
 			mysqlpp::Query query = conn->query();
 			query << "SELECT um.torrent_pass, xfu.peer_id, xfu.port, xfu.ipv4, xfu.ipv6, xfu.uploaded,"
 			      << " xfu.downloaded, xfu.remaining, xfu.corrupt, xfu.announced, xfu.ctime, xfu.mtime"
-			      << " FROM xbt_files_users AS xfu INNER JOIN users_main AS um ON xfu.uid=um.ID"
-			      << " WHERE xfu.active='1' AND um.Enabled='1' AND xfu.remaining=0 AND xfu.fid=" << torrent.id;
+			      << " FROM xbt_files_users AS xfu INNER JOIN users AS um ON xfu.uid=um.ID"
+			      << " WHERE xfu.active='1' AND um.Status=0 AND xfu.remaining=0 AND xfu.fid=" << torrent.id;
 			size_t num_rows = 0;
 			std::unordered_set<std::string> cur_keys;
 			mysqlpp::StoreQueryResult res = query.store();
@@ -440,8 +440,8 @@ void database::load_leechers(torrent_list &torrents, user_list &users) {
 			mysqlpp::Query query = conn->query();
 			query << "SELECT um.torrent_pass, xfu.peer_id, xfu.port, xfu.ipv4, xfu.ipv6, xfu.uploaded,"
 			      << " xfu.downloaded, xfu.remaining, xfu.corrupt, xfu.announced, xfu.ctime, xfu.mtime"
-			      << " FROM xbt_files_users AS xfu INNER JOIN users_main AS um ON xfu.uid=um.ID"
-			      << " WHERE xfu.active='1' AND um.Enabled='1' AND um.can_leech='1' AND xfu.remaining!=0 AND xfu.fid=" << torrent.id;
+			      << " FROM xbt_files_users AS xfu INNER JOIN users AS um ON xfu.uid=um.ID"
+			      << " WHERE xfu.active='1' AND um.Status=0 AND um.can_leech='1' AND xfu.remaining!=0 AND xfu.fid=" << torrent.id;
 			size_t num_rows = 0;
 			std::unordered_set<std::string> cur_keys;
 			mysqlpp::StoreQueryResult res = query.store();
@@ -698,7 +698,7 @@ void database::flush_users() {
 	// Similar to flush_torrents this can actually insert a new user entry into the DB.
 	// IT SHOULDN'T! And we shouldn't be deleting users either. This needs to change to
 	// an UPDATE transaction.
-	sql = "INSERT INTO users_main (ID, Uploaded, Downloaded, UploadedDaily, DownloadedDaily) VALUES " + update_user_buffer +
+	sql = "INSERT INTO users (ID, Uploaded, Downloaded, UploadedDaily, DownloadedDaily) VALUES " + update_user_buffer +
 		" ON DUPLICATE KEY UPDATE" +
 		" Uploaded = Uploaded + VALUES(Uploaded)," +
 		" Downloaded = Downloaded + VALUES(Downloaded)," +
