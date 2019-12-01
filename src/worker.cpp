@@ -102,13 +102,13 @@ std::string worker::work(const std::string &input, std::string &ip, uint16_t &ip
 
 	// Get the passkey
 	std::string passkey;
-	passkey.reserve(32);
+	passkey.reserve(64);
 
 	// Check if we have anonymous function enabled.
 	// If that is the case, we use the default hash (set in configuration), to keep track of anonymous traffic.
 	// If the user doesn't exist in the database, it should be created, otherwise the tracker will still give a error.
 	if (!anonymous) {
-		if (input[37] != '/') {
+		if (input[69] != '/') {
 			// just handle robots.txt if announce is malformed.
 			// robots.txt requested?
 			if(input[11] == '.')
@@ -116,23 +116,23 @@ std::string worker::work(const std::string &input, std::string &ip, uint16_t &ip
 			return response_error("Malformed announce", client_opts);
 		}
 
-		for (; pos < 37; pos++) {
+		for (; pos < 69; pos++) {
 			passkey.push_back(input[pos]);
 		}
 
-		pos = 38;
+		pos = 70;
 	} else {
-		if (input[37] != '/') {
+		if (input[69] != '/') {
 			if(input[11] == '.')
 				return "User-agent: *\nDisallow: /";
 
 			pos = 5;
 			passkey = anonymous_password;
 		} else {
-			for (; pos < 37; pos++) {
+			for (; pos < 69; pos++) {
 				passkey.push_back(input[pos]);
 			}
-			pos = 38;
+			pos = 70;
 		}
 	}
 
