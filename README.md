@@ -16,7 +16,7 @@ Also required for debug builds:
 * [gperftools](https://github.com/gperftools/gperftools) (CPU profiler bindings)
 
 ```
-sudo apt-get install libboost-dev libboost-all-dev libev-dev libmysql++-dev libjemalloc-dev
+sudo apt-get install libboost-dev libboost-all-dev libev-dev libmysql++-dev libjemalloc-dev autoconf
 ```
 
 ### Standalone Installation
